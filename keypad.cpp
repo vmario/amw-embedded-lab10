@@ -2,16 +2,23 @@
 
 #include <avr/io.h>
 
-#define KEYPAD_PORT PORTD ///< Rejestr PORT klawiatury.
-#define KEYPAD_PIN PIND ///< Rejestr PIN klawiatury.
-#define KEYPAD_START_BIT PD0 ///< Pin klawisza "Start".
-#define KEYPAD_STOP_BIT PD1 ///< Pin klawisza "Stop".
+#define KEYPAD_PORT PORTB ///< Rejestr PORT klawiatury.
+#define KEYPAD_PIN PINB ///< Rejestr PIN klawiatury.
+#define KEYPAD_DOWN_BIT PB0 ///< Pin klawisza "Down".
+#define KEYPAD_UP_BIT PB1 ///< Pin klawisza "Up".
 
 void Keypad::init() const
 {
+	KEYPAD_PORT |= _BV(KEYPAD_DOWN_BIT) | _BV(KEYPAD_UP_BIT);
 }
 
 KEY Keypad::key() const
 {
-	return KEY_NONE;
+	if (bit_is_clear(KEYPAD_PIN, KEYPAD_DOWN_BIT)) {
+		return KEY_DOWN;
+	} else if (bit_is_clear(KEYPAD_PIN, KEYPAD_UP_BIT)) {
+		return KEY_UP;
+	} else {
+		return KEY_NONE;
+	}
 }

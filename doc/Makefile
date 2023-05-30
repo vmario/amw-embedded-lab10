@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 TARGET = manual.pdf
-SOURCE = manual.md hourglass.svg
+SOURCE = manual.md
 
 all: $(TARGET)
 

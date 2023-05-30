@@ -2,7 +2,6 @@
 #include "timer.hpp"
 #include "menu.hpp"
 #include "keypad.hpp"
-#include "buzzer.hpp"
 
 #include <avr/interrupt.h>
 
@@ -14,12 +13,11 @@
  *
  * @param menu Menu na wyświetlaczu.
  * @param keypad Klawiatura.
- * @param buzzer Buzzer.
  */
-void onSystemTick(Menu& menu, const Keypad& keypad, const Buzzer& buzzer)
+void onSystemTick(Menu& menu, const Keypad& keypad)
 {
 	menu.onKey(keypad.key());
-	menu.refresh(buzzer);
+	menu.refresh();
 }
 
 /**
@@ -29,20 +27,18 @@ int main()
 {
 	const SystemTick tick;
 	const Lcd lcd;
-	const Buzzer buzzer;
 	const Keypad keypad;
 	Menu menu{lcd};
 
 	tick.init();
 	lcd.init();
-	buzzer.init();
 	keypad.init();
 	menu.init();
 	sei();
 
 	while (true) {
 		if (tick.pop()) {
-			onSystemTick(menu, keypad, buzzer);
+			onSystemTick(menu, keypad);
 		}
 	}
 

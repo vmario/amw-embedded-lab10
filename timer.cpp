@@ -5,46 +5,46 @@
 #include <avr/interrupt.h>
 #include <util/atomic.h>
 
-/**
- * Konfiguracja Timer/Counter0 w trybie Clear Timer on Compare Match.
- */
-static constexpr uint8_t TIMER0_CTC = _BV(WGM01);
+#define BACKLIGHT_DDR DDRB ///< Rejestr DDR podświetlenia.
+#define BACKLIGHT_BIT PB3 ///< Pin podświetlenia.
 
 /**
- * Taktowanie Timer/Counter0 zegarem podzielonym przez 256.
+ * Połowa jasności podświetlenia.
  */
-static constexpr uint8_t TIMER0_PRESCALER_256 = _BV(CS02);
+static uint8_t HALF_BRIGHTNESS{80};
 
 /**
- * Rejestr komparatora Timer/Counter0 dający tick 125Hz.
+ * Konfiguracja Timer/Counter0 w trybie Fast PWM.
  */
-static constexpr uint8_t TIMER0_OCR_TICK = 250;
+static constexpr uint8_t TIMER0_FAST_PWM = _BV(WGM01) | _BV(WGM00);
 
 /**
- * Liczba ticków timera, co ile występuje tick systemowy 5Hz.
+ * Taktowanie Timer/Counter0 zegarem podzielonym przez 64.
  */
-static constexpr uint8_t SYSTEM_TICK_INTERVAL = 25;
+static constexpr uint8_t TIMER0_PRESCALER_64 = _BV(CS01) | _BV(CS00);
+
+/**
+ * Konfiguracja OC0A w trybie normalnym.
+ */
+static constexpr uint8_t TIMER0_NON_INVERTING_MODE = _BV(COM0A1);
 
 static volatile bool expired; ///< Czy timer ustawił flagę?
 
 /**
- * Obsługa przerwania TIMER0_COMPA.
+ * Obsługa przerwania TIMER0_OVF.
  */
-ISR(TIMER0_COMPA_vect)
+ISR(TIMER0_OVF_vect)
 {
-	static uint32_t interval;
-	if (++interval > SYSTEM_TICK_INTERVAL) {
-		interval = 0;
-		expired = true;
-	}
+	expired = true;
 }
 
 void SystemTick::init() const
 {
-	TCCR0A = TIMER0_CTC;
-	TCCR0B = TIMER0_PRESCALER_256;
-	OCR0A = TIMER0_OCR_TICK;
-	TIMSK0 = _BV(OCIE0A);
+	TCCR0A = TIMER0_FAST_PWM | TIMER0_NON_INVERTING_MODE;
+	TCCR0B = TIMER0_PRESCALER_64;
+	OCR0A = HALF_BRIGHTNESS;
+	TIMSK0 = _BV(TOIE0);
+	BACKLIGHT_DDR = _BV(BACKLIGHT_BIT);
 }
 
 bool SystemTick::pop() const

@@ -1,3 +1,3 @@
-# Laboratorium systemów wbudowanych: Ćwiczenie 8
+# Laboratorium systemów wbudowanych: Ćwiczenie 10
 
 Instrukcja znajduje się w pliku `doc/manual.pdf`.

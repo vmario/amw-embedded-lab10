@@ -2,7 +2,6 @@
 
 #include "lcd.hpp"
 #include "keypad.hpp"
-#include "buzzer.hpp"
 
 /**
  * Menu na wyświetlaczu.
@@ -14,8 +13,7 @@ struct Menu {
 	 * @param lcd Sterownik wyświetlacza.
 	 */
 	Menu(const Lcd& lcd):
-		lcd{lcd},
-		time{-1}
+		lcd{lcd}
 	{}
 
 	/**
@@ -26,10 +24,10 @@ struct Menu {
 	/**
 	 * Odświeża stan ekranu.
 	 */
-	void refresh(const Buzzer& buzzer);
+	void refresh();
 
 	/**
-	 * Obsługuje zdarzenie z pokrętłą impulsatora.
+	 * Obsługuje zdarzenie wciśnięcia klawisza.
 	 *
 	 * @param key Wciśnięty klawisz.
 	 */
@@ -37,5 +35,4 @@ struct Menu {
 
 private:
 	const Lcd& lcd; ///< Sterownik wyświetlacza.
-	int16_t time; ///< Bieżący stan odliczonego czasu.
 };

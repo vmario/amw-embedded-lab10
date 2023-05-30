@@ -5,8 +5,8 @@
  */
 enum KEY {
 	KEY_NONE, ///< Żaden klawisz nie jest wciśnięty.
-	KEY_START, ///< Wciśnięty klawisz "Start".
-	KEY_STOP ///< Wciśnięty klawisz "Stop".
+	KEY_DOWN, ///< Wciśnięty klawisz "Start".
+	KEY_UP ///< Wciśnięty klawisz "Stop".
 };
 
 /**
